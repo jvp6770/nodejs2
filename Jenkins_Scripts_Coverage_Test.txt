@@ -1,0 +1,117 @@
+================================================
+Pre Requisite of Jenkins 
+
+#1) Installation of Java.
+#2) Set up environment variable.
+#2) Installation of Maven.
+
+================================================
+Installation Steps of Jenkins
+
+#1) Download the latest stable Jenkins WAR file to an appropriate directory on your machine.
+#2) Open up a terminal/command prompt window to the download directory.
+#3) Run the command java -jar jenkins.war.
+#4) Browse to http://localhost:8080 and wait until the Unlock Jenkins page appears.
+    # http://jenkin-server:8080
+#5) Continue on with the Post-installation setup wizard below.
+
+================================================
+Set up Admin Account
+
+Creating the first administrator user
+Finally, Jenkins asks you to create your first administrator user.
+
+When the Create First Admin User page appears, specify your details in the respective fields and click Save and Finish.
+When the Jenkins is ready page appears, click Start using Jenkins.
+
+
+Notes:
+
+This page may indicate Jenkins is almost ready! instead and if so, click Restart.
+If the page doesn’t automatically refresh after a minute, use your web browser to refresh the page manually.
+If required, log in to Jenkins with the credentials of the user you just created and you’re ready to start using
+================================================
+
+# Start Jenkins 
+
+Step 1 : Browse to http://localhost:8080
+Step 2 : Login to Jenkins Using admin credentials.
+Step 3 : Create first Free Style job.
+Step 4 : Ensure You are signing into GIT Lab Account & mentioning test.sh URL in to job for node js.
+         https://gitlab.com/users/sign_in
+Step 5: Mention webhook URL in parameter.
+Step 6 : Add Below configuration for node.js application
+
+============Jekins Build & Test Pipeline==========================
+
+=======This GIT HUB URL can be utilised for Build & Test>https://github.com/jvp6770/JenkinTest
+
+         pipeline {
+    agent any 
+        stage('Build') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh './jenkins/scripts/testone.sh'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh './jenkins/scripts/deploy.sh'
+                input message: 'Successfully Deploy' (Click "Proceed" to continue)'
+                  }
+        }
+    }
+     }
+
+=================================================================
+deploy.sh
+
+#!/usr/bin/env sh
+
+echo 'The following "npm" command builds your Node.js/React application for'
+echo 'production in the local "build" directory (i.e. within the'
+echo '"/var/jenkins_home/workspace/simple-node-js-react-app" directory),'
+echo 'correctly bundles React in production mode and optimizes the build for'
+echo 'the best performance.'
+set -x
+npm run build
+set +x
+
+echo 'The following "npm" command runs your Node.js/React application in'
+echo 'development mode and makes the application available for web browsing.'
+echo 'The "npm start" command has a trailing ampersand so that the command runs'
+echo 'as a background process (i.e. asynchronously). Otherwise, this command'
+echo 'can pause running builds of CI/CD applications indefinitely. "npm start"'
+echo 'is followed by another command that retrieves the process ID (PID) value'
+echo 'of the previously run process (i.e. "npm start") and writes this value to'
+echo 'the file ".pidfile".'
+set -x
+npm start &
+sleep 1
+echo $! > .pidfile
+set +x
+
+echo 'Now...'
+echo 'Visit http://localhost:3000 to see your Node.js/React application in action.'
+echo '(This is why you specified the "args ''-p 3000:3000''" parameter when you'
+echo 'created your initial Pipeline as a Jenkinsfile.)'
+
+===============================================
+testone.sh
+
+#!/usr/bin/env sh
+
+echo 'The following "npm" command (if executed) installs the "cross-env"'
+
+set -x
+# npm install --save-dev cross-env
+set +x
+
+echo 'The following "npm" command tests that your simple Node.js'
+
+set -x
+npm test
